@@ -2,7 +2,7 @@
 Schreibt einen auf Pythons Selenium basierenden Bot, um Daten zu zum Verkauf stehenden Häusern von [ImmobilienScout24](https://www.immobilienscout24.de/) zu sammeln. Es sei darauf hingewiesen, dass der Code nur zur Veranschaulichung dient und nicht aktiv genutzt werden sollte, da der Webseiten-Betreiber Richtlinien gegen Webscraping haben könnte.
 
 ## Grundlage
-Wir schreiben Code, um Pythons Paket `selenium` zusammen mit `selenium_stealth` und `undetected_chromedriver` zu nutzen, um einen Chrome-Browser manuell durch die Suchliste von ImmobilienScout24 zu navigieren, Seiten zu Immobilien nacheinander zu öffnen und die Verkaufsdaten in einem `pandas` dataframe zu speichern. Als Beispiel nutzen wir hier die Suchergebnisse der zum Verkauf stehenden Häuser im Kreis Paderborn in Nordrhein-Westfalen (sortiert von den neuesten Einträgen zu den ältesten), jedoch kann der Code theoretisch für andere Suchen genutzt werden.
+Wir schreiben Code, um Pythons Paket `selenium` zu nutzen, um einen Firefox-Browser manuell durch die Suchliste von ImmobilienScout24 zu navigieren, Seiten zu Immobilien nacheinander zu öffnen und die Verkaufsdaten in einem `pandas` dataframe zu speichern. Als Beispiel nutzen wir hier die Suchergebnisse der zum Verkauf stehenden Häuser im Kreis Paderborn in Nordrhein-Westfalen (sortiert von den neuesten Einträgen zu den ältesten), jedoch kann der Code theoretisch für andere Suchen genutzt werden.
 
 ## Hinweise vorweg
 ImmobilienScout24 nutzt Anti-Bot-Software, um botgesteuerte Browser zu erkennen und Scraping-Versuche entweder zu verlangsamen oder auch mit CAPTCHAs zu unterbrechen. Schon beim ersten Öffnen der Seite könnte man mit einem CAPTCHA konfrontiert werden. Daher nutzen wir hier `selenium`. Dies ermöglicht uns, mit dem ferngesteuerten Browser manuell interagieren zu können, sollten wir auf Hindernisse wie CAPTCHAs treffen. Dem aktuellen Stand nach vom 27.06.2026 könnte man beim ersten Öffnen der Seite auf ein CAPTCHA treffen sowie jeweils nach dem Scrapen von ca. 450 Einträgen. Auch Tools wie `undetected_chromedriver` und `selenium_stealth` helfen derzeit nicht mehr weiter.
@@ -20,23 +20,6 @@ import time                                  # für Wartezeiten
 import pandas as pd                          # für Datensatzerstellung
 from datetime import datetime                # um Zeitpunkt des Downloads zu speichern
 from numpy.random import uniform as unif     # für variable Wartezeiten
-import undetected_chromedriver as uc         # um Bot-Identifizierung möglichst zu umgehen
-from selenium_stealth import stealth         # um Bot-Identifizierung möglichst zu umgehen
-```
-
-### Browser-Start mit Optionen
-
-```
-options = uc.ChromeOptions()
-driver = uc.Chrome(options = options, version_main = 149)    # Zahl muss zur genutzten Chrome-Browser-Version passen
-driver.maximize_window()
-stealth(
-    driver,
-    languages=["de-DE", "de"],
-    vendor="Google Inc.",
-    platform="Win32",
-    fix_hairline=True,
-)
 ```
 
 ### Hilfsfunktionen
@@ -270,9 +253,11 @@ def fuege_suchseiteninfos_hinzu(driver, df):
     return df
 ```
 
-### Startseite Laden
+### Browser Initialisieren & Startseite Laden
 
 ```
+driver = webdriver.Firefox()
+driver.maximize_window()
 base_url = "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/paderborn-kreis/haus-kaufen?sorting=2&enteredFrom=result_list"
 driver.get(base_url)
 ```
