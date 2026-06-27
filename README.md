@@ -7,3 +7,17 @@ Wir schreiben Code, um Pythons Paket `selenium` zusammen mit `selenium_stealth` 
 ## Hinweise vorweg
 ImmobilienScout24 nutzt Anti-Bot-Software, um botgesteuerte Browser zu erkennen und Scraping-Versuche entweder zu verlangsamen oder auch mit CAPTCHAs zu unterbrechen. Schon beim ersten Öffnen der Seite könnte man mit einem CAPTCHA konfrontiert werden. Daher nutzen wir hier `selenium`. Dies ermöglicht uns, mit dem ferngesteuerten Browser manuell interagieren zu können, sollten wir auf Hindernisse wie CAPTCHAs treffen. Dem aktuellen Stand nach vom 27.06.2026 könnte man beim ersten Öffnen der Seite auf ein CAPTCHA treffen sowie jeweils nach dem Scrapen von ca. 450 Einträgen. Auch Tools wie `undetected_chromedriver` und `selenium_stealth` helfen derzeit nicht mehr weiter.
 
+## Imports
+
+```
+from selenium import webdriver               # zur Browser-Steuerung
+from selenium.webdriver.common.by import By  # für XPATH
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time                                  # für Wartezeiten
+import pandas as pd                          # für Datensatzerstellung
+from datetime import datetime                # um Zeitpunkt des Downloads zu speichern
+from numpy.random import uniform as unif     # für variable Wartezeiten
+import undetected_chromedriver as uc         # um Bot-Identifizierung möglichst zu umgehen
+from selenium_stealth import stealth         # um Bot-Identifizierung möglichst zu umgehen
+```
