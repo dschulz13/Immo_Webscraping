@@ -258,6 +258,7 @@ def fuege_suchseiteninfos_hinzu(driver, df):
 ```
 driver = webdriver.Firefox()
 driver.maximize_window()
+driver.set_page_load_timeout(30)
 base_url = "https://www.immobilienscout24.de/Suche/de/nordrhein-westfalen/paderborn-kreis/haus-kaufen?sorting=2&enteredFrom=result_list"
 driver.get(base_url)
 ```
@@ -292,8 +293,12 @@ while i < 1:
         nxt_button = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[@data-testid='pagination-button-next']"))
         )
+        next_button_disab = driver.find_element(By.XPATH, "//button[@data-testid='pagination-button-next']").get_attribute("aria-disabled")
     except:
-        print('Prozess gestoppt')
+        print('Prozess vorzeitig gestoppt')
+        break
+    if next_button_disab == "true":
+        print('Prozess regulär gestoppt')
         break
     nxt_button.click()
     time.sleep(10 + unif(1, 2))
